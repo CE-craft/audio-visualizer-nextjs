@@ -1,24 +1,31 @@
+import { useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Preload, AdaptiveDpr, OrbitControls } from "@react-three/drei";
 import VideoScreen from "./VideoScreen";
 import CamFeedHolder from "./CamFeedHolder";
 
 const CanvasThree = () => {
+  const [videoFeed, setVideoFeed] = useState();
+
+  const getVideoFeed = (video) => {
+    setVideoFeed(video);
+  };
+
   return (
     <div className="canvas-three">
-      <CamFeedHolder source={"source"} />
+      <CamFeedHolder getVideoFeed={getVideoFeed} />
       <Canvas
         performance={{ max: 0.5 }}
         dpr={[1, 2]}
         camera={{
           fov: 40,
 
-          position: [0, 0, 6],
+          position: [0, 1, 3],
           far: 100,
           near: 0.1,
         }}
       >
-        <color attach="background" args={["#191920"]} />
+        {/* <color attach="background" args={["#191920"]} /> */}
         <OrbitControls />
 
         <directionalLight
@@ -28,12 +35,12 @@ const CanvasThree = () => {
           rotation={[0, 0, -5]}
         />
         <ambientLight intensity={0.5} color={"white"} />
-        <mesh position={[0, 1.5, -0.25]}>
+        {/* <mesh position={[0, 0, 0]}>
           <boxBufferGeometry args={[1, 1, 1]} />
           <meshStandardMaterial color={"red"} />
-        </mesh>
+        </mesh> */}
 
-        <VideoScreen />
+        <VideoScreen videoFeed={videoFeed} />
 
         <Preload all />
         <AdaptiveDpr pixelated />

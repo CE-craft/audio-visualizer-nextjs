@@ -16,7 +16,6 @@ const ScreenShaderMaterial = shaderMaterial(
   void main(){
 
 
-
     vec4 color = texture2D( uVideoTexture, vUv );
     float depth = (color.r + color.g + color.b) / 3.0;
 
