@@ -1,31 +1,41 @@
-import { useState } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
+import { useFrame } from "@react-three/fiber";
+import * as THREE from "three";
+import { Stats } from "@react-three/drei";
 import { Preload, AdaptiveDpr, OrbitControls } from "@react-three/drei";
 import VideoScreen from "./VideoScreen";
 import CamFeedHolder from "./CamFeedHolder";
+import AudioReactor from "./AudioReactor";
+import AudioFeedHolder from "./AudioFeedHolder";
 
 const CanvasThree = () => {
   const [videoFeed, setVideoFeed] = useState();
+  const [camColorScreen, setCamColorScreen] = useState();
 
-  const getVideoFeed = (video) => {
+  const getVideoFeed = (video, camScreen) => {
     setVideoFeed(video);
+    setCamColorScreen(camScreen);
   };
 
   return (
     <div className="canvas-three">
+      <Stats />
       <CamFeedHolder getVideoFeed={getVideoFeed} />
+      {/* <AudioFeedHolder /> */}
       <Canvas
         performance={{ max: 0.5 }}
+        gl={{ antialias: false }}
         dpr={[1, 2]}
         camera={{
-          fov: 40,
-
-          position: [0, 1, 3],
+          // add:listener,
+          fov: 35,
+          position: [0, 3, 20],
           far: 100,
           near: 0.1,
         }}
       >
-        {/* <color attach="background" args={["#191920"]} /> */}
+        <color attach="background" args={["#191920"]} />
         <OrbitControls />
 
         <directionalLight
@@ -34,13 +44,12 @@ const CanvasThree = () => {
           position={[0, 5, 4]}
           rotation={[0, 0, -5]}
         />
-        <ambientLight intensity={0.5} color={"white"} />
-        {/* <mesh position={[0, 0, 0]}>
-          <boxBufferGeometry args={[1, 1, 1]} />
-          <meshStandardMaterial color={"red"} />
-        </mesh> */}
+        {/* <ambientLight intensity={0.5} color={"white"} /> */}
 
-        <VideoScreen videoFeed={videoFeed} />
+        <Suspense fallback={null}>
+          <AudioReactor videoFeed={videoFeed} camColorScreen={camColorScreen} />
+          {/* <VideoScreen videoFeed={videoFeed} /> */}
+        </Suspense>
 
         <Preload all />
         <AdaptiveDpr pixelated />
